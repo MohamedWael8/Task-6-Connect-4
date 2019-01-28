@@ -1,0 +1,18 @@
+.container
+{
+    background: lightseagreen;
+    width: 35em;
+    height: 30em;
+    padding:1.5em 1.5em 1.5em 1.5em;
+    margin-top:5em;
+}
+
+.circle
+{
+    height: 3em;
+    width: 3.5em;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0.5em 1em 0.5em 1em;
+}
