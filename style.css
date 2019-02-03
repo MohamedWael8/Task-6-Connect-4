@@ -9,10 +9,30 @@
 
 .circle
 {
-    height: 3em;
-    width: 3.5em;
-    background-color: white;
+    height: 3.25em;
+    width: 5em;
     border-radius: 50%;
     display: inline-block;
     margin: 0.5em 1em 0.5em 1em;
+}
+
+.white
+{
+    background-color: white;
+    
+}
+
+.red
+{
+    background-color: red;
+}
+
+.yellow
+{
+    background-color: yellow;
+}
+
+.lightBlue
+{
+    background-color: lightblue;
 }
