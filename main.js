@@ -8,7 +8,7 @@ $(document).ready(
                 this.board = [];
                 this.boardSize = 42;
                 this.player = 1;
-                this.game = "in-session";
+                this.game = "In-Session";
                 this.build();
             },
 
@@ -32,6 +32,8 @@ $(document).ready(
         {
             init : function()
             {
+                this.$session = $('.winner');
+                this.$player = $('.player');
                 this.$rowDiv = $(".row");
                 this.cellTemplate = $('script[data-template="cell"]').html();
                 this.$rowDiv.on('click', '.circle', function(e) 
@@ -47,9 +49,13 @@ $(document).ready(
             render : function()
             {
                 var $rowDiv = this.$rowDiv;
+                var $session =  this.$session;
+                var $player = this.$player;
                 $rowDiv.html('');
-                cellTemplate = this.cellTemplate;
+                var cellTemplate = this.cellTemplate;
                 var cells = octopus.getCells();
+                $session.text(octopus.getSession());
+                $player.text(octopus.getPlayer());
                 cells.forEach(function(cell)
                 {
                     var thisTemplate = cellTemplate.replace(/{{row}}/g, cell.row);
@@ -70,7 +76,7 @@ $(document).ready(
 
             dropCell : function(row,column)
             {
-                if(model.game == "in-session")
+                if(model.game == "In-Session")
                 {
                     var currentCell =  model.board.find(cell => (cell.row == row && cell.column == column));
                     if(currentCell.status != "filled" && currentCell.available)
@@ -90,6 +96,7 @@ $(document).ready(
                         this.changePlayer();
                         view.render();
                     }
+                    
                 }
                 
                 
@@ -119,21 +126,47 @@ $(document).ready(
                 }
             },
 
+            getSession : function()
+            {
+                return model.game;
+            },
+
+            getPlayer :function()
+            {
+                if(model.player == 1)
+                    return "Player One";
+                else
+                    return "Player Two";
+            },
+
             connectFour : function (position,color)
             {
-                var
-                diagonalLeftTop =0, 
-                diagonalTopRight = 0;
                 if(this.horizontalConnection(position,color))
                 {
                     console.log(color + " is the winner");
-                    model.game = "ended";
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
                     return;
                 }
                 if(this.verticalConnection(position,color))
                 {
                     console.log(color + " is the winner");
-                    model.game = "ended";
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
+                    return;
+                }
+                if(this.topLeftDiagonalConnection(position,color))
+                {
+                    console.log(color + " is the winner");
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
+                    return;
+                }
+                if(this.topRightDiagonalConnection(position,color))
+                {
+                    console.log(color + " is the winner");
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
                     return;
                 }
                 
@@ -145,23 +178,21 @@ $(document).ready(
                 var i=0;
                 if(position+(i)<=model.boardSize-1) 
                 {
-                    console.log(model.board[position+(i)].row); // model[position+(i)].row position
                     if(model.board[position+(i)].row == model.board[position].row)
                     {
-                        while(model.board[position+i].color == color)
+                        while(position+(i)<=model.boardSize-1 && model.board[position+i].color == color)
                         {
                             horizontalCounter++;
                             i++;
                         }
                     }   
                 }
-               
                 i=1;
                 if(position-(i)>=0)
                 {
                     if(model.board[position-(i)].row == model.board[position].row)
                     {
-                        while(model.board[position-i].color == color)
+                        while(position-(i)>=0 && model.board[position-i].color == color)
                         {
                             horizontalCounter++;
                             i++;
@@ -180,9 +211,9 @@ $(document).ready(
                 var i=0;
                 if(position+(i*7) <= model.boardSize-1)
                 {
-                    if(model.board[position+(i*7)].column == model.board[position])
+                    if(model.board[position+(i*7)].column == model.board[position].column)
                     {
-                        while(model.board[position+(i*7)].color == color)
+                        while(position+(i*7) <= model.boardSize-1 && model.board[position+(i*7)].color == color)
                         {
                             verticalCounter++;
                             i++;
@@ -192,7 +223,7 @@ $(document).ready(
                 i=1;
                 if(position-(i*7) >= 0)
                 {
-                    if(model.board[position-(i*7)].column == model.board[position].column)
+                    if(position-(i*7) >= 0 && model.board[position-(i*7)].column == model.board[position].column)
                     {
                         while(model.board[position-(i*7)].color == color)
                         {
@@ -200,13 +231,66 @@ $(document).ready(
                             i++;
                         }
                     }
-                }
+                } 
                 if(verticalCounter == 4)
                     return true;
                 else
                     return false;
-            }
+            },
 
+            topLeftDiagonalConnection : function(position,color)
+            {
+                var diagonalLeftTop = 1;
+                var i=1;
+                if((position+(i*7))+i <= model.boardSize-1)
+                {
+                    while((position+(i*7))+i <= model.boardSize-1 && model.board[position+(i*7)+i].color == color)
+                    {
+                        diagonalLeftTop++;
+                        i++;
+                    }
+                }
+                i=1;
+                if((position-(i*7))-i >= 0)
+                {
+                    while(model.board[(position-(i*7))-i].color == color)
+                    {
+                        diagonalLeftTop++;
+                        i++;
+                    }
+                }
+                if(diagonalLeftTop == 4)
+                    return true;
+                else
+                    return false;
+            },
+
+            topRightDiagonalConnection : function(position,color)
+            {
+                var diagonalTopRight = 1;
+                var i=1;
+                if((position+(i*7))-i <= model.boardSize-1)
+                {
+                    while((position+(i*7))-i <= model.boardSize-1 && model.board[(position+(i*7))-i].color == color)
+                    {
+                        diagonalTopRight++;
+                        i++;
+                    }
+                }
+                i=1;
+                if((position-(i*7))+i >= 0)
+                {
+                    while(model.board[(position-(i*7))+i].color == color)
+                    {
+                        diagonalTopRight++;
+                        i++;
+                    }
+                }
+                if(diagonalTopRight == 4)
+                    return true;
+                else
+                    return false;
+            }
 
         }
         octopus.init();
