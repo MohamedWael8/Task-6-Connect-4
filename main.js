@@ -169,7 +169,20 @@ $(document).ready(
                     view.render();
                     return;
                 }
-                
+                if(this.diagonalVConnection(position,color))
+                {
+                    console.log(color + " is the winner");
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
+                    return;
+                }
+                if(this.diagonalEightConnection(position,color))
+                {
+                    console.log(color + " is the winner");
+                    model.game = "Ended: " + color + " is the winner";
+                    view.render();
+                    return;
+                }
             },
 
             horizontalConnection : function(position,color)
@@ -290,7 +303,147 @@ $(document).ready(
                     return true;
                 else
                     return false;
+            },
+
+            rightDiagonalUp : function(position,color)
+            {
+                if((position-(7))+1 >= 0)
+                {
+                    if(model.board[(position-(7))+1].color == color)
+                    {
+                        if((position-(14))+2 >= 0)
+                        {
+                            console.log(model.board[(position-(14))+2].color +" "+ color)
+                            if(model.board[(position-(14))+2].color == color)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+
+            rightDiagonalDown : function(position,color)
+            {
+                if((position+(7))-1 < 42)
+                {
+                    if(model.board[(position+(7))-1].color == color)
+                    {
+                        if((position+(14))-2 < 42)
+                        {
+                            if(model.board[(position+(14))-2].color == color)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+
+            leftDiagonalUp : function(position,color)
+            {
+                if((position-(7))-1 >= 0)
+                {
+                    if(model.board[(position-(7))-1].color == color)
+                    {
+                        if((position-(14))-2 >= 0)
+                        {
+                            if(model.board[(position-(14))-2].color == color)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+
+            leftDiagonalDown : function(position,color)
+            {
+                if((position+(7))+1 < 42)
+                {
+                    if(model.board[(position+(7))+1].color == color)
+                    {
+                        if((position+(14))+2 < 42)
+                        {
+                            if(model.board[(position+(14))+2].color == color)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            },
+
+            diagonalVConnection : function(position,color)
+            {
+                if(this.rightDiagonalUp(position,color))
+                {
+                    console.log("RightUp true")
+                    if(this.leftDiagonalUp(position,color))
+                    {
+                        console.log("LeftUp true")
+                        return true;
+                    }
+                }
+
+                if(this.rightDiagonalDown(position,color))
+                {
+                    console.log("RightDown true")
+                    if(this.leftDiagonalUp((position+14)-2) , color)
+                    {
+                        console.log("LeftUp true")
+                        return true
+                    }
+                }
+
+                if(this.leftDiagonalDown(position,color))
+                {
+                    console.log("LeftDown true")
+                    if(this.rightDiagonalUp((position+14)+2,color))
+                    {
+                        console.log("RightUp true ")
+                        return true
+                    }
+                }
+            },
+
+            diagonalEightConnection : function(position,color)
+            {
+                if(this.rightDiagonalUp(position,color))
+                {
+                    console.log("RightUp true")
+                    if(this.leftDiagonalDown((position-14)+2,color))
+                    {
+                        console.log("LeftDown true")
+                        return true;
+                    }
+                }
+
+                if(this.leftDiagonalDown(position,color))
+                {
+                    console.log("LeftDown true")
+                    if(this.rightDiagonalDown(position , color))
+                    {
+                        console.log("RightDown true")
+                        return true
+                    }
+                }
+
+                if(this.leftDiagonalUp(position,color))
+                {
+                    console.log("LeftUp true")
+                    if(this.rightDiagonalDown((position-14)-2,color))
+                    {
+                        console.log("RightDown true ")
+                        return true
+                    }
+                }
             }
+
 
         }
         octopus.init();
